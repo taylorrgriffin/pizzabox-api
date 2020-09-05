@@ -1,18 +1,53 @@
-# pizzabox-api
+<!-- # pizzabox-api -->
 
-## Setup
+# Setup
 
 Create SSL certificate for https with `./create_cert.sh`<br/>
 
-## Usage
+# Usage
 
 Build and run with `docker-compose up --build`<br/>
 Run latest build with `docker-compose up`
 
-## Cleanup
+# Cleanup
 
 Clear database with `docker-compose down`
 
-## Endpoints
+# Endpoints
+
+## Test API connection
 
 `GET https://localhost:8080/`
+
+## Get db info
+
+`GET https://localhost:8080/dbInfo?apiKey=`
+
+## Fetch all games
+
+`GET https://localhost:8080/games?apiKey=`
+
+## Fetch game by id
+
+`GET https://localhost:8080/game/:gameId?apiKey=`
+
+## Create a new game
+
+`POST https://localhost:8080/game`
+
+Request body example: 
+```
+{
+  game: {
+    "gameId": "AB10",
+    "players": [
+      "Tylor",
+      "Alec",
+      "Angle",
+      "AD"
+    ],
+    "rules": [],
+    "turn": 0
+  }
+}
+```
