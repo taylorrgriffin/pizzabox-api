@@ -2,13 +2,17 @@
 
 ## Setup
 
-Install depdencies with `npm install`<br/>
 Create SSL certificate for https with `./create_cert.sh`<br/>
 
 ## Usage
 
-Run with `npm start`
+Build and run with `docker-compose up --build`<br/>
+Run latest build with `docker-compose up`
+
+## Cleanup
+
+Delete latest build with `docker-compose down`
 
 ## Endpoints
 
-`GET /`
+`GET https://localhost:8080/`
