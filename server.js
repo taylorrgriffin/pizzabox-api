@@ -4,6 +4,9 @@ const https = require('https');
 const express = require('express');
 const bodyParser = require('body-parser');
 
+// import apiKey from secrets file
+const apiKey = require('./secrets.json').apiKey;
+
 // create instance of express server
 const app = express();
 
@@ -31,6 +34,21 @@ app.use((req, res, next) => {
 // root endpoint to ensure service is active
 app.get('/', (req, res) => {
   res.status(200).send({ err: null, info: 'OK' });
+});
+
+// middleware to make sure /api endpoints always require valid API key
+app.use('/api', (req, res, next) => {
+  if (req.query && req.query.apiKey == apiKey) {
+    next();
+  }
+  else {
+    res.status(401).send({err: 'Invalid API key sent. See documentation for more information.', info: null});
+  }
+});
+
+// fetch all games currently stored in the db
+app.use('/api/games', (req, res) => {
+  res.status(200).send({ err: null, info: [] });
 });
 
 // catch-all for non-existant endpoints
