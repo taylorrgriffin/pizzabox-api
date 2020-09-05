@@ -7,7 +7,13 @@ const bodyParser = require('body-parser');
 // import apiKey from secrets file
 const apiKey = require('./secrets.json').apiKey;
 
-const { dbInfo } = require('./db.connection');
+// database methods
+const {
+  dbInfo,
+  addGame,
+  fetchGames,
+  fetchGameById
+} = require('./db.connection');
 
 // create instance of express server
 const app = express();
@@ -53,9 +59,40 @@ app.get('/api/dbInfo', (req, res) => {
   dbInfo(res);
 });
 
+// store a new game in the db
+app.post('/api/game', (req, res) => {
+  if (req.body && req.body.game) {
+    addGame(res, req.body.game);
+  }
+  else {
+    // 422 is for 'Unprocessable entity',
+    // so we send 422 back if the request body does not contain a game object
+    res.status(422).send({
+      err: 'Missing game object in request body. See documentation for more information.',
+      info: null
+    });
+  }
+});
+
 // fetch all games currently stored in the db
 app.get('/api/games', (req, res) => {
-  res.status(200).send({ err: null, info: [] });
+  fetchGames(res);
+});
+
+// fetch a game by a given id stored in the db
+app.get('/api/game/:gameId', (req, res) => {
+  let id = req.params.gameId;
+  if (id) {
+    fetchGameById(res, id);
+  }
+  else {
+    // 422 is for 'Unprocessable entity',
+    // so we send 422 back if the request does not contain a gameId parameter
+    res.status(422).send({
+      err: 'Missing gameId parameter in request. See documentation for more information.',
+      info: null
+    });
+  }
 });
 
 // catch-all for non-existant endpoints

@@ -11,7 +11,7 @@ Run latest build with `docker-compose up`
 
 ## Cleanup
 
-Delete latest build with `docker-compose down`
+Clear database with `docker-compose down`
 
 ## Endpoints
 
