@@ -7,6 +7,8 @@ const bodyParser = require('body-parser');
 // import apiKey from secrets file
 const apiKey = require('./secrets.json').apiKey;
 
+const { dbInfo } = require('./db.connection');
+
 // create instance of express server
 const app = express();
 
@@ -46,8 +48,13 @@ app.use('/api', (req, res, next) => {
   }
 });
 
+// endpoint to get metatdata about database sizes
+app.get('/api/dbInfo', (req, res) => {
+  dbInfo(res);
+});
+
 // fetch all games currently stored in the db
-app.use('/api/games', (req, res) => {
+app.get('/api/games', (req, res) => {
   res.status(200).send({ err: null, info: [] });
 });
 
