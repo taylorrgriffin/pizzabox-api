@@ -25,7 +25,7 @@ Clear database with `docker-compose down`
 
 ### Fetch all games
 
-`GET https://localhost:8080/games?apiKey=`
+`GET https://localhost:8080/game?apiKey=`
 
 ### Fetch game by id
 
@@ -51,3 +51,11 @@ Request body example:
   }
 }
 ```
+
+### Delete a game by id
+
+`DELETE https://localhost:8080/game/:gameId`
+
+### Delete all games
+
+`DELETE https://localhost:8080/game`

@@ -88,9 +88,65 @@ function fetchGameById(res, id) {
   });
 }
 
+// remove a game by id from db
+function removeGameById(res, id) {
+  let mongoClient = require('mongodb').MongoClient;
+  mongoClient.connect(url, options, (err, client) => {
+    if (err) {
+      res.status(500).send({err: err, info: null})
+    }
+    var dbo = client.db(name);
+    dbo.collection("games").remove({ "gameId": id })
+      .then(result => {
+        if (result.result.ok === 1 && result.result.n === 1) {
+          res.status(200).send({ err: null, info: `Removed game ${id}`});
+          client.close();
+        }
+        else {
+          let error = `Unexpected delete result: ${result}`;
+          res.status(500).send({ err: error, info: null });
+          client.close();
+        }
+      })
+      .catch(err => {
+          res.status(500).send({ err: err, info: null });
+          client.close();
+      });
+  });
+}
+
+// remove all games from db
+function removeGames(res) {
+  let mongoClient = require('mongodb').MongoClient;
+  mongoClient.connect(url, options, (err, client) => {
+    if (err) {
+      res.status(500).send({err: err, info: null})
+    }
+    var dbo = client.db(name);
+    dbo.collection("games").remove({})
+      .then(result => {
+        if (result.result.ok === 1) {
+          res.status(200).send({ err: null, info: `Removed ${result.result.n} games`});
+          client.close();
+        }
+        else {
+          let error = `Unexpected delete result: ${result}`;
+          res.status(500).send({ err: error, info: null });
+          client.close();
+        }
+      })
+      .catch(err => {
+          res.status(500).send({ err: err, info: null });
+          client.close();
+      });
+  });
+}
+
 module.exports = {
   dbInfo,
   addGame,
   fetchGames,
   fetchGameById,
+  removeGameById,
+  removeGames,
 }

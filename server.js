@@ -12,7 +12,9 @@ const {
   dbInfo,
   addGame,
   fetchGames,
-  fetchGameById
+  fetchGameById,
+  removeGames,
+  removeGameById
 } = require('./db.connection');
 
 // create instance of express server
@@ -75,7 +77,7 @@ app.post('/api/game', (req, res) => {
 });
 
 // fetch all games currently stored in the db
-app.get('/api/games', (req, res) => {
+app.get('/api/game', (req, res) => {
   fetchGames(res);
 });
 
@@ -93,6 +95,27 @@ app.get('/api/game/:gameId', (req, res) => {
       info: null
     });
   }
+});
+
+// delete a game by a given id from the db
+app.delete('/api/game/:gameId', (req, res) => {
+  let id = req.params.gameId;
+  if (id) {
+    removeGameById(res, id);
+  }
+  else {
+    // 422 is for 'Unprocessable entity',
+    // so we send 422 back if the request does not contain a gameId parameter
+    res.status(422).send({
+      err: 'Missing gameId parameter in request. See documentation for more information.',
+      info: null
+    });
+  }
+});
+
+// delete all games in the db
+app.delete('/api/game', (req, res) => {
+  removeGames(res);
 });
 
 // catch-all for non-existant endpoints
