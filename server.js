@@ -14,7 +14,8 @@ const {
   fetchGames,
   fetchGameById,
   removeGames,
-  removeGameById
+  removeGameById,
+  addPlayer
 } = require('./db.connection');
 
 // create instance of express server
@@ -71,6 +72,23 @@ app.post('/api/game', (req, res) => {
     // so we send 422 back if the request body does not contain a game object
     res.status(422).send({
       err: 'Missing game object in request body. See documentation for more information.',
+      info: null
+    });
+  }
+});
+
+// add player to existing game
+app.put('/api/game/:gameId', (req, res) => {
+  let id = req.params.gameId;
+  let player = req.body ? req.body.player : null;
+  if (id && player) {
+    addPlayer(res, id, player);
+  }
+  else {
+    // 422 is for 'Unprocessable entity',
+    // so we send 422 back if the request does not contain a gameId or player parameter
+    res.status(422).send({
+      err: 'Missing gameId or player parameter in request. See documentation for more information.',
       info: null
     });
   }

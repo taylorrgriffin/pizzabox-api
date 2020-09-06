@@ -38,17 +38,23 @@ Clear database with `docker-compose down`
 Request body example: 
 ```
 {
-  game: {
-    "gameId": "AB10",
-    "players": [
-      "Tylor",
-      "Alec",
-      "Angle",
-      "AD"
-    ],
+  "game": {
+    "gameId": "A1P0",
+    "players": [],
     "rules": [],
     "turn": 0
   }
+}
+```
+
+## Add a player to a game
+
+`PUT https://localhost:8080/game/:gameId`
+
+Request body example: 
+```
+{
+  "player": "p1"
 }
 ```
 

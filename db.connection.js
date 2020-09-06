@@ -142,6 +142,43 @@ function removeGames(res) {
   });
 }
 
+// add a player to a game in the db (player must have a unique name)
+function addPlayer(res, gameId, player) {
+  let mongoClient = require('mongodb').MongoClient;
+  mongoClient.connect(url, options, (err, client) => {
+    if (err) {
+      res.status(500).send({err: err, info: null})
+    }
+    var dbo = client.db(name);
+    // addToSet will ensure no duplicates can exist in the players list for a given game
+    dbo.collection("games").update(
+      { "gameId": gameId },
+      { $addToSet: { players: player } }
+    ).then(result => {
+      if (result.result.ok === 1) {
+        // return 200 if player is added
+        if (result.result.nModified === 1) {
+          let response = `Successfully added player ${player} to game ${gameId}.`;
+          res.status(200).send({ err: null, info: response });
+        }
+        // return 400 if player name was already taken
+        else {
+          let response = `Player ${player} already exists in game ${gameId}, please pick a different name.`;
+          res.status(400).send({ err: response, info: null });
+        }
+      }
+      // if something is up with the result object, send it as 500 error
+      else {
+        let error = `Failed to add player, result: ${result}`;
+        res.status(500).send({ err: error, info: null });
+      }
+    }).catch(err => {
+      let error = `Failed to add player: ${err}`;
+      res.status(500).send({ err: error, info: null });
+    });
+  });
+}
+
 module.exports = {
   dbInfo,
   addGame,
@@ -149,4 +186,5 @@ module.exports = {
   fetchGameById,
   removeGameById,
   removeGames,
+  addPlayer
 }
